@@ -21,8 +21,28 @@ class App extends React.Component {
     };
   }
 
-  onSaveButtonClick = () => {
-    console.log('salvar');
+  onSaveButtonClick = ({ target }) => {
+    const { value } = target;
+    this.setState({
+      data: [value],
+    });
+
+    const { data } = this.state;
+
+    console.log(data);
+
+    this.setState({
+      cardName: '',
+      cardDescription: '',
+      cardImage: '',
+      cardAttr1: '0',
+      cardAttr2: '0',
+      cardAttr3: '0',
+      cardRare: 'normal',
+      cardTrunfo: false,
+      hasTrunfo: false,
+      isSaveButtonDisabled: true,
+    });
   }
 
   handleSubmit = () => {
