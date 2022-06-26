@@ -18,20 +18,24 @@ class App extends React.Component {
       cardTrunfo: false,
       hasTrunfo: false,
       isSaveButtonDisabled: true,
+      data: [],
     };
   }
 
-  onSaveButtonClick = ({ target }) => {
-    const { value } = target;
-    this.setState({
-      data: [value],
-    });
-
+  handleTrunfo = () => {
     const { data } = this.state;
+    const trunfo = data.some((state) => state.cardTrunfo === true);
+    if (trunfo === true) {
+      this.setState({ hasTrunfo: true });
+    } else {
+      this.setState({ hasTrunfo: false });
+    }
+  }
 
-    console.log(data);
-
-    this.setState({
+  onSaveButtonClick = (event) => {
+    event.preventDefault();
+    const valueState = this.state;
+    this.setState((prevState) => ({
       cardName: '',
       cardDescription: '',
       cardImage: '',
@@ -40,9 +44,9 @@ class App extends React.Component {
       cardAttr3: '0',
       cardRare: 'normal',
       cardTrunfo: false,
-      hasTrunfo: false,
       isSaveButtonDisabled: true,
-    });
+      data: [...prevState.data, valueState],
+    }), this.handleTrunfo);
   }
 
   handleSubmit = () => {
