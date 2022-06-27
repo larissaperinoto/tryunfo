@@ -151,13 +151,23 @@ class App extends React.Component {
             type="text"
             onChange={ (event) => this.handleResearch(event) }
           />
+          <select
+            data-testid="rare-filter"
+            onChange={ (event) => this.handleResearch(event) }
+          >
+            <option value="todas">todas</option>
+            <option value="normal">normal</option>
+            <option value="raro">raro</option>
+            <option value="muito raro">muito raro</option>
+          </select>
         </label>
 
         { filter.length > 0
           ? (
             <ul>
               { data
-                .filter((card) => JSON.stringify(card.cardName).includes(filter))
+                .filter((card) => JSON.stringify(card.cardName).includes(filter)
+                  || card.cardRare === filter || filter === 'todas')
                 .map((card, index) => (
                   <div key={ index }>
                     <Card
