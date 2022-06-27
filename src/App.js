@@ -18,6 +18,7 @@ class App extends React.Component {
       cardTrunfo: false,
       hasTrunfo: false,
       isSaveButtonDisabled: true,
+      filter: '',
       data: [],
     };
   }
@@ -89,10 +90,15 @@ class App extends React.Component {
     }), this.handleSubmit);
   }
 
-  removeCard = (index) => {
+  handleRemoveCard = (index) => {
     const { data } = this.state;
     const newData = data.filter((_card, i) => i !== index);
     this.setState({ data: newData }, this.handleTrunfo);
+  }
+
+  handleResearch = ({ target }) => {
+    const { value } = target;
+    this.setState({ filter: value });
   }
 
   render() {
@@ -105,7 +111,8 @@ class App extends React.Component {
       cardAttr3,
       cardTrunfo,
       hasTrunfo,
-      isSaveButtonDisabled } = this.state;
+      isSaveButtonDisabled,
+      filter } = this.state;
 
     const { data } = this.state;
     return (
@@ -136,30 +143,69 @@ class App extends React.Component {
           cardRare={ cardRare }
           cardTrunfo={ cardTrunfo }
         />
-        <ul className="cardPrewiew">
-          { data.map((card, index) => (
-            <div key={ index }>
-              <Card
-                cardName={ card.cardName }
-                cardDescription={ card.cardDescription }
-                cardAttr1={ card.cardAttr1 }
-                cardAttr2={ card.cardAttr2 }
-                cardAttr3={ card.cardAttr3 }
-                cardImage={ card.cardImage }
-                cardRare={ card.cardRare }
-                cardTrunfo={ card.cardTrunfo }
-              />
-              <button
-                data-testid="delete-button"
-                type="button"
-                onClick={ () => this.removeCard(index) }
-              >
-                Excluir
-              </button>
-            </div>
-          ))}
-        </ul>
 
+        <label htmlFor="name-filter">
+          Filtro de buscas
+          <input
+            data-testid="name-filter"
+            type="text"
+            onChange={ (event) => this.handleResearch(event) }
+          />
+        </label>
+
+        { filter.length > 0
+          ? (
+            <ul>
+              { data
+                .filter((card) => JSON.stringify(card.cardName).includes(filter))
+                .map((card, index) => (
+                  <div key={ index }>
+                    <Card
+                      cardName={ card.cardName }
+                      cardDescription={ card.cardDescription }
+                      cardAttr1={ card.cardAttr1 }
+                      cardAttr2={ card.cardAttr2 }
+                      cardAttr3={ card.cardAttr3 }
+                      cardImage={ card.cardImage }
+                      cardRare={ card.cardRare }
+                      cardTrunfo={ card.cardTrunfo }
+                    />
+                    <button
+                      data-testid="delete-button"
+                      type="button"
+                      onClick={ () => this.handleRemoveCard(index) }
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                )) }
+            </ul>
+          )
+          : (
+            <ul>
+              { data.map((card, index) => (
+                <div key={ index }>
+                  <Card
+                    cardName={ card.cardName }
+                    cardDescription={ card.cardDescription }
+                    cardAttr1={ card.cardAttr1 }
+                    cardAttr2={ card.cardAttr2 }
+                    cardAttr3={ card.cardAttr3 }
+                    cardImage={ card.cardImage }
+                    cardRare={ card.cardRare }
+                    cardTrunfo={ card.cardTrunfo }
+                  />
+                  <button
+                    data-testid="delete-button"
+                    type="button"
+                    onClick={ () => this.handleRemoveCard(index) }
+                  >
+                    Excluir
+                  </button>
+                </div>
+              )) }
+            </ul>
+          ) }
       </div>
     );
   }
