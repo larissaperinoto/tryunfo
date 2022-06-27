@@ -1,15 +1,5 @@
 .form {
   display: flex;
   flex-direction: column;
-  width: 300px;
-  border: 1px solid black;
-  margin: 50px;
-  padding: 20px;
 }
 
-.cardPrewiew {
-  border: 1px solid black;
-  width: 300px;
-  margin: 50px;
-  padding: 20px;
-}
