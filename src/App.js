@@ -89,6 +89,12 @@ class App extends React.Component {
     }), this.handleSubmit);
   }
 
+  removeCard = (index) => {
+    const { data } = this.state;
+    const newData = data.filter((_card, i) => i !== index);
+    this.setState({ data: newData }, this.handleTrunfo);
+  }
+
   render() {
     const { cardName,
       cardImage,
@@ -130,7 +136,7 @@ class App extends React.Component {
           cardRare={ cardRare }
           cardTrunfo={ cardTrunfo }
         />
-        <ul>
+        <ul className="cardPrewiew">
           { data.map((card, index) => (
             <div key={ index }>
               <Card
@@ -143,6 +149,13 @@ class App extends React.Component {
                 cardRare={ card.cardRare }
                 cardTrunfo={ card.cardTrunfo }
               />
+              <button
+                data-testid="delete-button"
+                type="button"
+                onClick={ () => this.removeCard(index) }
+              >
+                Excluir
+              </button>
             </div>
           ))}
         </ul>
