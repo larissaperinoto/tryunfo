@@ -97,7 +97,7 @@ class App extends React.Component {
   }
 
   handleResearch = ({ target }) => {
-    const { value } = target;
+    const value  = target.type === 'checkbox' ? target.checked : target.value;
     this.setState({ filter: value });
   }
 
@@ -115,6 +115,7 @@ class App extends React.Component {
       filter } = this.state;
 
     const { data } = this.state;
+    console.log(data[0])
     return (
       <div>
         <h1>Tryunfo</h1>
@@ -160,14 +161,23 @@ class App extends React.Component {
             <option value="raro">raro</option>
             <option value="muito raro">muito raro</option>
           </select>
+
+          <label htmlFor="trunfo-filter">
+            <input
+              data-testid="trunfo-filter"
+              type="checkbox"
+              onChange={ (event) => this.handleResearch(event) }
+            />
+            Super Trunfo
+          </label>
         </label>
 
-        { filter.length > 0
+        { filter
           ? (
             <ul>
-              { data
+              {data
                 .filter((card) => JSON.stringify(card.cardName).includes(filter)
-                  || card.cardRare === filter || filter === 'todas')
+                  || card.cardRare === filter || card.hasTrunfo === filter || filter === 'todas')
                 .map((card, index) => (
                   <div key={ index }>
                     <Card
