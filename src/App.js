@@ -18,7 +18,12 @@ class App extends React.Component {
       cardTrunfo: false,
       hasTrunfo: false,
       isSaveButtonDisabled: true,
-      filter: '',
+      filter: {
+        name: '',
+        rare: '',
+        trunfo: '',
+        disabled: '',
+      },
       data: [],
     };
   }
@@ -35,7 +40,7 @@ class App extends React.Component {
 
   onSaveButtonClick = (event) => {
     event.preventDefault();
-    const valueState = this.state;
+    const { data, hasTrunfo, filter, ...valueState } = this.state;
     this.setState((prevState) => ({
       cardName: '',
       cardDescription: '',
@@ -97,8 +102,14 @@ class App extends React.Component {
   }
 
   handleResearch = ({ target }) => {
-    const value  = target.type === 'checkbox' ? target.checked : target.value;
-    this.setState({ filter: value });
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    if (target.type === 'text') this.setState({ filter: { name: value } });
+    if (target.type === 'select-one') this.setState({ filter: { rare: value } });
+    if (target.type === 'checkbox') {
+      this.setState({ filter: { trunfo: value, disabled: true } });
+      const { filter: { trunfo } } = this.state;
+      if (trunfo === true) this.setState({ filter: { disabled: false } });
+    }
   }
 
   render() {
@@ -112,10 +123,9 @@ class App extends React.Component {
       cardTrunfo,
       hasTrunfo,
       isSaveButtonDisabled,
-      filter } = this.state;
+      filter,
+      data } = this.state;
 
-    const { data } = this.state;
-    console.log(data[0])
     return (
       <div>
         <h1>Tryunfo</h1>
@@ -150,11 +160,13 @@ class App extends React.Component {
           <input
             data-testid="name-filter"
             type="text"
+            disabled={ filter.disabled }
             onChange={ (event) => this.handleResearch(event) }
           />
           <select
             data-testid="rare-filter"
             onChange={ (event) => this.handleResearch(event) }
+            disabled={ filter.disabled }
           >
             <option value="todas">todas</option>
             <option value="normal">normal</option>
@@ -171,13 +183,14 @@ class App extends React.Component {
             Super Trunfo
           </label>
         </label>
-
-        { filter
+        { (filter.name || filter.rare || filter.trunfo)
           ? (
             <ul>
               {data
-                .filter((card) => JSON.stringify(card.cardName).includes(filter)
-                  || card.cardRare === filter || card.hasTrunfo === filter || filter === 'todas')
+                .filter((card) => JSON.stringify(card.cardName).includes(filter.name)
+                  || card.cardRare === filter.rare
+                  || card.cardTrunfo === filter.trunfo
+                  || filter.rare === 'todas')
                 .map((card, index) => (
                   <div key={ index }>
                     <Card
