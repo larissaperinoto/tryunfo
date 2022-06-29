@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class Filter extends React.Component {
   render() {
-    const { disabled, handleResearch } = this.props;
+    const { disabled, handleFilter } = this.props;
     return (
       <div>
         <label htmlFor="name-filter">
@@ -13,11 +13,11 @@ class Filter extends React.Component {
             name="name-filter"
             type="text"
             disabled={ disabled }
-            onChange={ (event) => handleResearch(event) }
+            onChange={ (event) => handleFilter(event) }
           />
           <select
             data-testid="rare-filter"
-            onChange={ (event) => handleResearch(event) }
+            onChange={ (event) => handleFilter(event) }
             disabled={ disabled }
           >
             <option value="todas">todas</option>
@@ -31,7 +31,7 @@ class Filter extends React.Component {
               data-testid="trunfo-filter"
               name="trunfo-filter"
               type="checkbox"
-              onChange={ (event) => handleResearch(event) }
+              onChange={ (event) => handleFilter(event) }
             />
             Super Trunfo
           </label>
@@ -42,8 +42,8 @@ class Filter extends React.Component {
 }
 
 Filter.propTypes = {
-  disabled: PropTypes.bool.isRequired,
-  handleResearch: PropTypes.func.isRequired,
+  disabled: PropTypes.string.isRequired,
+  handleFilter: PropTypes.func.isRequired,
 };
 
 export default Filter;

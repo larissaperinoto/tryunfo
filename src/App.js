@@ -3,6 +3,7 @@ import Form from './components/Form';
 import Card from './components/Card';
 import Filter from './components/Filter';
 import './App.css';
+import CardList from './components/CardList';
 
 const firstState = {
   cardName: '',
@@ -91,7 +92,7 @@ class App extends React.Component {
     this.setState({ data: newData }, this.handleTrunfo);
   }
 
-  handleResearch = ({ target }) => {
+  handleFilter = ({ target }) => {
     const value = target.type === 'checkbox' ? target.checked : target.value;
     if (target.type === 'text') this.setState({ filter: { name: value } });
     if (target.type === 'select-one') this.setState({ filter: { rare: value } });
@@ -102,16 +103,24 @@ class App extends React.Component {
     }
   }
 
+  handleResearch = () => {
+    const { filter: { name, rare, trunfo }, data } = this.state;
+    if (name || rare || trunfo) {
+      return (data.filter((card) => (
+        JSON.stringify(card.cardName).includes(name)
+        || card.cardRare === rare
+        || card.cardTrunfo === trunfo
+        || rare === 'todas')));
+    }
+    return data;
+  }
+
   render() {
     const { hasTrunfo,
       isSaveButtonDisabled,
       filter: {
-        name,
-        rare,
-        trunfo,
-        disabled,
-      },
-      data } = this.state;
+        disabled },
+    } = this.state;
 
     return (
       <div>
@@ -128,65 +137,13 @@ class App extends React.Component {
 
         <Filter
           disabled={ disabled }
-          handleResearch={ this.handleResearch }
+          handleFilter={ this.handleFilter }
         />
 
-        { (name || rare || trunfo)
-          ? (
-            <ul>
-              {data
-                .filter((card) => JSON.stringify(card.cardName).includes(name)
-                  || card.cardRare === rare
-                  || card.cardTrunfo === trunfo
-                  || rare === 'todas')
-                .map((card, index) => (
-                  <div key={ index }>
-                    <Card
-                      cardName={ card.cardName }
-                      cardDescription={ card.cardDescription }
-                      cardAttr1={ card.cardAttr1 }
-                      cardAttr2={ card.cardAttr2 }
-                      cardAttr3={ card.cardAttr3 }
-                      cardImage={ card.cardImage }
-                      cardRare={ card.cardRare }
-                      cardTrunfo={ card.cardTrunfo }
-                    />
-                    <button
-                      data-testid="delete-button"
-                      type="button"
-                      onClick={ () => this.handleRemoveCard(index) }
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                )) }
-            </ul>
-          )
-          : (
-            <ul>
-              { data.map((card, index) => (
-                <div key={ index }>
-                  <Card
-                    cardName={ card.cardName }
-                    cardDescription={ card.cardDescription }
-                    cardAttr1={ card.cardAttr1 }
-                    cardAttr2={ card.cardAttr2 }
-                    cardAttr3={ card.cardAttr3 }
-                    cardImage={ card.cardImage }
-                    cardRare={ card.cardRare }
-                    cardTrunfo={ card.cardTrunfo }
-                  />
-                  <button
-                    data-testid="delete-button"
-                    type="button"
-                    onClick={ () => this.handleRemoveCard(index) }
-                  >
-                    Excluir
-                  </button>
-                </div>
-              )) }
-            </ul>
-          ) }
+        <CardList
+          data={ this.handleResearch() }
+          handleRemoveCard={ this.handleRemoveCard }
+        />
       </div>
     );
   }
